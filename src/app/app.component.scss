@@ -1,0 +1,27 @@
+.tick text {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 18px;
+    color: red;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -khtml-user-select: none;
+  }
+
+.tick line {
+    stroke: red !important;
+    stroke-width: 1px;
+    fill-opacity: 0.2;
+  }
+
+.axis {
+stroke: green;
+stroke-width: 1px;
+}
+
+.container{
+margin: 40px;
+}
