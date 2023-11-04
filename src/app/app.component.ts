@@ -1,30 +1,51 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, OnInit } from '@angular/core';
 import * as d3 from 'd3';
-import { data } from './data';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
-  title = 'd3-cursors';
-  svgElement: any;
-  plotWidth: number = 800;
-  plotHeight: number = 600;
-  data = data;
-  xScale: any;
-  yScale: any;
-  margin: number = 40;
+export class AppComponent implements OnInit {
+  private svgElement: any;
+  private plotWidth: number = 800;
+  private plotHeight: number = 600;
+  private xScale: any;
+  private yScale: any;
+  private margin: number = 40;
+  private data: any[] = [];
+  private gapArray: boolean[] = [
+    false, true, false, false, true, false, false, false, true, false , false , false , false ,false
+    , false , false , false , false ,false, false , false , false , false ,false,true , true ,true ,true,true,
+    false , false , false , false ,false, false , false, false , false, false, false, false, true, false, false, false, true, false , false , false , false ,false
+    , false , false , false , false ,false, false , false , false , false ,false,true , true ,true ,true,true,
+    false , false , false , false ,false, true , false, true , false, true, false, false, true, false, false, false, true, false , false , false , false ,false
+    , false , false , false , false ,false, false , false , false , false ,false,true , true ,true ,true,true,
+    false , false , false , false ,false, true , false, true , false, true, false, false, true, false, false, false, true, false , false , false , false ,false
+    , false , false , false , false ,false, false , false , false , false ,false,true , true ,true ,true,true,
+    false , false , false , false ,false, true , false, true , false, true, false, false, true, false, false, false, true, false , false , false , false ,false
+    , false , false , false , false ,false, false , false , false , false ,false,true , true ,true ,true,true,
+    false , false , false , false ,false, false ,false, false , false, false, false, false, false, false, false, false, true, false , false , false , false ,false
+    , false , false , false , false ,false, false , false , false , false ,false,true , true ,true ,true,true,
+    false , false , false , false ,false, true , false, true , false, true, false, false, true, false, false, false, true, false , false , false , false ,false
+    , false , false , false , false ,false, false , false , false , false ,false,true , true ,true ,true,true,
+    false , false , false , false ,false, true , false, true , false
+  ];
+  constructor(private elementRef: ElementRef) {
+    for (let i = 0; i < 360; i++) {
+      const yValue = this.gapArray[i] ? null : Math.sin(i * (Math.PI / 180) * 2);
+      this.data.push({ x: i, y: yValue });
+    }
+  }
 
   ngOnInit(): void {
     this.createPlot();
     this.drawPlot();
-    this.renderCursor(6.5);
+    this.addCursor();
   }
 
   createPlot() {
-    let divSelection = d3.select('#chart');
+    let divSelection = d3.select(this.elementRef.nativeElement).select('#sine-wave-chart');
     this.svgElement = divSelection
       .append('svg')
       .classed('svg', true)
@@ -32,164 +53,88 @@ export class AppComponent {
       .attr('width', this.plotWidth + 'px')
       .attr('height', this.plotHeight + 'px')
       .attr('tabindex', 0)
-      .style('outline', 'none')
-      .on('click', (event: any) => this.mouseClick(event))
-      .append('g')
-      .attr('transform', 'translate(0,0)');
+      .style('outline', 'none');
 
     this.svgElement
-      .append('defs')
-      .append('svg:clipPath')
-      .attr('id', 'zoomClip')
-      .append('svg:rect')
-      .attr('width', this.plotWidth - this.margin)
-      .attr('height', this.plotHeight - this.margin)
-      .attr('x', this.margin)
-      .attr('y', this.margin)
-      .attr('cursor', 'pointer');
-    this.svgElement
       .append('g')
-      .attr('clip-path', 'url(#zoomClip)')
-      .attr('id', 'clipPath');
+      .attr('transform', 'translate(' + this.margin + ',' + this.margin + ')')
+      .attr('id', 'plot-area');
   }
 
   drawPlot() {
-    this.xScale = d3.scaleLinear().range([0, this.plotWidth - this.margin]);
-    this.xScale.domain([
-      d3.min(this.data, (d) => d.x),
-      d3.max(this.data, (d) => d.x),
-    ]);
+    this.xScale = d3.scaleLinear().range([0, this.plotWidth - 2 * this.margin]);
+    this.xScale.domain([0, 360]);
 
     const xAxis = d3.axisBottom(this.xScale);
-    // .tickSize(-this.plotHeight)
-    // .tickSizeOuter(0)
-    // .tickFormat((d) => d.toString());
 
-    const xAxisSvg = this.svgElement
+    this.svgElement
+      .select('#plot-area')
       .append('g')
       .attr('class', 'axis')
       .attr('id', 'x-axis')
-      .attr(
-        'transform',
-        'translate(' +
-          this.margin +
-          ',' +
-          (this.plotHeight - 2 * this.margin) +
-          ')'
-      )
+      .attr('transform', 'translate(0,' + (this.plotHeight - 2 * this.margin) + ')')
       .call(xAxis);
 
-    this.yScale = d3
-      .scaleLinear()
-      .range([this.margin, this.plotHeight - 2 * this.margin]);
-    this.yScale.domain([
-      d3.max(this.data, (d) => d.y),
-      d3.min(this.data, (d) => d.y),
-    ]);
+    this.yScale = d3.scaleLinear().range([this.plotHeight - 2 * this.margin, 0]);
+    this.yScale.domain([-1, 1]);
 
     const yAxis = d3.axisLeft(this.yScale);
-    // .tickSize(-this.plotWidth)
-    // .tickSizeOuter(0)
-    // .tickFormat((d) => d.toString());
 
     this.svgElement
+      .select('#plot-area')
       .append('g')
       .attr('id', 'y-axis')
-      .style('transform', 'translate(' + this.margin + 'px,  0)')
       .call(yAxis);
 
-    const cursorAxis = d3.axisLeft(this.yScale).tickFormat(() => '');
+    const line = d3.line()
+      .x((d: any) => this.xScale(d.x))
+      .y((d: any) => this.yScale(d.y));
 
-    this.svgElement
-      .append('g')
-      .attr('id', 'cursor-axis')
-      .attr('pointer-events', 'all')
-      .attr('cursor', 'pointer')
-      .style('transform', 'translate(' + this.margin + 'px,  0)')
-      .style('color', 'green')
-      .call(cursorAxis);
+    let lastGap = -1; 
 
-    this.svgElement
-      .selectAll('#cursor-axis .tick')
-      .selectAll('line')
-      .attr('x2', (d: any) => {
-        return 12;
-      })
-      .style('transform', 'translate(-6px,  0)');
+    for (let i = 0; i < this.data.length; i++) {
+      if (this.gapArray[i]) {
+        lastGap = i; 
+      } else if (lastGap !== -1) {
+        this.svgElement
+          .select('#plot-area')
+          .append('circle')
+          .attr('class', 'red-dot')
+          .attr('cx', this.xScale(this.data[i].x))
+          .attr('cy', this.yScale(this.data[i].y))
+          .attr('r', 5)
+          .attr('fill', 'red');
 
-    const innerSVG = this.svgElement
-      .append('g')
-      .style(
-        'transform',
-        'translate(' + this.margin + 'px, ' + this.margin + 'px)'
-      );
+        lastGap = -1;
+      }
 
-    innerSVG
-      .append('path')
-      .datum(data)
-      .attr('class', 'line')
-      .attr('id', 'line')
-      .style('fill', 'transparent')
-      .attr('stroke-width', 1)
-      .attr('stroke-linejoin', 'round')
-      .attr('stroke', (d: any) => 'red')
-      .attr(
-        'd',
-        d3
-          .line()
-          .defined((d: any) => {
-            if (d.y !== null && !isNaN(d.y)) {
-              return true;
-            } else {
-              return false;
-            }
-          })
-          .x((d: any) => this.xScale(d.x))
-          .y((d: any) => this.yScale(d.y))
-      );
-  }
-  mouseClick(event: any): void {
-    console.log('...click');
-    console.log(event);
-    this.moveCursor(event.x);
-  }
-  moveCursor(x: any) {
-    const newCursorPosition = this.margin + x;
-    this.svgElement
-      .select('#cursor-axis')
-      .style('transform', 'translate(' + newCursorPosition + 'px,  0)');
+      this.svgElement
+        .select('#plot-area')
+        .append('path')
+        .datum(this.data.slice(i, i + 2))
+        .attr('class', 'line')
+        .style('fill', 'none')
+        .attr('stroke-width', 1.5)
+        .attr('stroke', 'blue')
+        .attr('d', line);
+    }
   }
 
-  private renderCursor(cursorPosition: number) {
-    const newCursorPosition = this.margin + this.xScale(cursorPosition);
-    this.svgElement
-      .select('#cursor-axis')
-      .style('transform', 'translate(' + newCursorPosition + 'px,  0)');
+  addCursor() {
+    const plotArea = this.svgElement.select('#plot-area');
+    const cursor = plotArea
+      .append('circle')
+      .attr('class', 'cursor')
+      .attr('r', 5) // Set the radius for the cursor dot
+      .attr('fill', 'green');
 
-    this.addDrag();
-  }
+    cursor.style('display', 'block');
 
-  addDrag() {
-    this.svgElement.select('#cursor-axis').call(d3.drag().on('drag', null));
-    let drag = d3.drag().on('drag', (d: any) => {
-      this.moveCursor(d.x);
+    plotArea.on('mousemove',  () => {
+      const [mouseX] = d3.pointer(event);
+      const xValue = this.xScale.invert(mouseX);
+      const yValue = Math.sin(xValue * (Math.PI / 180) * 2);
+      cursor.attr('cx', mouseX).attr('cy', this.yScale(yValue));
     });
-
-    this.svgElement.select('#cursor-axis').call(drag);
   }
-
-  // private renderCursor(cursorPosition: number) {
-  //   console.log('>..');
-  //   let svgWithClip = this.svgElement.select('#zoom');
-  //   return this.svgElement
-  //     ?.append('g')
-  //     .append('line')
-  //     .attr('x1', this.xScale(cursorPosition))
-  //     .attr('y1', 0)
-  //     .attr('x2', this.xScale(cursorPosition))
-  //     .attr('y2', this.plotHeight - 2 * this.margin)
-  //     .style('stroke-width', 2)
-  //     .style('stroke', 'green')
-  //     .style('fill', 'green');
-  // }
 }

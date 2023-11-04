@@ -20,11 +20,6 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'd3-cursors'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('d3-cursors');
-  });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
