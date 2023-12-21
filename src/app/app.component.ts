@@ -15,27 +15,270 @@ export class AppComponent implements OnInit {
   private margin: number = 40;
   private data: any[] = [];
   private gapArray: boolean[] = [
-    false, true, false, false, true, false, false, false, true, false , false , false , false ,false
-    , false , false , false , false ,false, false , false , false , false ,false,true , true ,true ,true,true,
-    false , false , false , false ,false, false , false, false , false, false, false, false, true, false, false, false, true, false , false , false , false ,false
-    , false , false , false , false ,false, false , false , false , false ,false,true , true ,true ,true,true,
-    false , false , false , false ,false, true , false, true , false, true, false, false, true, false, false, false, true, false , false , false , false ,false
-    , false , false , false , false ,false, false , false , false , false ,false,true , true ,true ,true,true,
-    false , false , false , false ,false, true , false, true , false, true, false, false, true, false, false, false, true, false , false , false , false ,false
-    , false , false , false , false ,false, false , false , false , false ,false,true , true ,true ,true,true,
-    false , false , false , false ,false, true , false, true , false, true, false, false, true, false, false, false, true, false , false , false , false ,false
-    , false , false , false , false ,false, false , false , false , false ,false,true , true ,true ,true,true,
-    false , false , false , false ,false, false ,false, false , false, false, false, false, false, false, false, false, true, false , false , false , false ,false
-    , false , false , false , false ,false, false , false , false , false ,false,true , true ,true ,true,true,
-    false , false , false , false ,false, true , false, true , false, true, false, false, true, false, false, false, true, false , false , false , false ,false
-    , false , false , false , false ,false, false , false , false , false ,false,true , true ,true ,true,true,
-    false , false , false , false ,false, true , false, true , false
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    true,
+    false,
+    true,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    true,
+    false,
+    true,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    true,
+    false,
+    true,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    true,
+    false,
+    true,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    true,
+    false,
   ];
+
   constructor(private elementRef: ElementRef) {
-    for (let i = 0; i < 360; i++) {
-      const yValue = this.gapArray[i] ? null : Math.sin(i * (Math.PI / 180) * 2);
-      this.data.push({ x: i, y: yValue });
-    }
+    this.initializeData();
   }
 
   ngOnInit(): void {
@@ -44,7 +287,15 @@ export class AppComponent implements OnInit {
     this.addCursor();
   }
 
-  createPlot() {
+  private initializeData() {
+    for (let i = 0; i < 360; i++) {
+      const yValue = Math.sin(i * (Math.PI / 180) * 2);
+      const color = this.gapArray[i] ? 'transparent' : 'blue';
+      this.data.push({ x: i, y: yValue, color });
+    }
+  }
+
+  private createPlot() {
     let divSelection = d3.select(this.elementRef.nativeElement).select('#sine-wave-chart');
     this.svgElement = divSelection
       .append('svg')
@@ -61,7 +312,7 @@ export class AppComponent implements OnInit {
       .attr('id', 'plot-area');
   }
 
-  drawPlot() {
+  private drawPlot() {
     this.xScale = d3.scaleLinear().range([0, this.plotWidth - 2 * this.margin]);
     this.xScale.domain([0, 360]);
 
@@ -90,47 +341,52 @@ export class AppComponent implements OnInit {
       .x((d: any) => this.xScale(d.x))
       .y((d: any) => this.yScale(d.y));
 
-    let lastGap = -1; 
+      let isPreviousTransparent = false;
 
-    for (let i = 0; i < this.data.length; i++) {
-      if (this.gapArray[i]) {
-        lastGap = i; 
-      } else if (lastGap !== -1) {
+      for (let i = 0; i < this.data.length - 1; i++) {
+        if (this.data[i].color === 'transparent' || this.data[i + 1].color === 'transparent') {
+          // If the color is transparent, mark it and continue
+          isPreviousTransparent = true;
+          continue;
+        }
+  
+        if (isPreviousTransparent) {
+          // Add a red dot after the last transparent segment
+          this.svgElement
+            .select('#plot-area')
+            .append('circle')
+            .attr('class', 'red-dot')
+            .attr('cx', this.xScale(this.data[i].x))
+            .attr('cy', this.yScale(this.data[i].y))
+            .attr('r', 5)
+            .attr('fill', 'red');
+          
+          isPreviousTransparent = false; 
+        }
+  
         this.svgElement
           .select('#plot-area')
-          .append('circle')
-          .attr('class', 'red-dot')
-          .attr('cx', this.xScale(this.data[i].x))
-          .attr('cy', this.yScale(this.data[i].y))
-          .attr('r', 5)
-          .attr('fill', 'red');
-
-        lastGap = -1;
+          .append('path')
+          .datum([this.data[i], this.data[i + 1]])
+          .attr('class', 'line')
+          .style('fill', 'none')
+          .attr('stroke-width', 1.5)
+          .attr('stroke', this.data[i].color)
+          .attr('d', line);
       }
-
-      this.svgElement
-        .select('#plot-area')
-        .append('path')
-        .datum(this.data.slice(i, i + 2))
-        .attr('class', 'line')
-        .style('fill', 'none')
-        .attr('stroke-width', 1.5)
-        .attr('stroke', 'blue')
-        .attr('d', line);
     }
-  }
 
-  addCursor() {
+  private addCursor() {
     const plotArea = this.svgElement.select('#plot-area');
     const cursor = plotArea
       .append('circle')
       .attr('class', 'cursor')
-      .attr('r', 5) // Set the radius for the cursor dot
+      .attr('r', 5) 
       .attr('fill', 'green');
 
     cursor.style('display', 'block');
 
-    plotArea.on('mousemove',  () => {
+    plotArea.on('mousemove', () => {
       const [mouseX] = d3.pointer(event);
       const xValue = this.xScale.invert(mouseX);
       const yValue = Math.sin(xValue * (Math.PI / 180) * 2);
